@@ -17,6 +17,7 @@ from configparser import ConfigParser
 app = Flask(__name__)
 sslify = SSLify(app)
 CONFIG = ConfigParser()
+CONFIG.read("conf.ini")
 
 
 class TravisCI:
@@ -130,7 +131,7 @@ def index():
         if request_json.get("message") is not None:
             message = request_json['message'].get("text")
             if "run" in message:
-                TgHelper().send_message(chat_id=TgHelper().chat_id, text="Выбери комплект для прогона автотестов",
+                TgHelper().send_message(chat_id=TgHelper().chat_id, text="Выберите комплект для прогона автотестов",
                                         markup=DbHelper().select_db())
                 return make_response(jsonify("Success"), 200)
             if "select" in message:
@@ -178,7 +179,7 @@ def index():
                 f_branch = "".join(DbHelper().select_db(favorite=True))
                 TravisCI().trigger(command=user_choice, branch=f_branch)
                 TgHelper().send_message(chat_id=TgHelper().chat_id,
-                                        text=f"Компект с меткой {user_choice} и веткой {f_branch} был запущен. Ожидайте результатов")
+                                        text=f"Комплект с меткой {user_choice} и веткой {f_branch} был запущен. Ожидайте результатов")
             else:
                 TgHelper().send_message(chat_id=TgHelper().chat_id,
                                         text=f"Пожалуйста, выберите ветку для запуска")
